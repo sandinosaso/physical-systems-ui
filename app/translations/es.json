@@ -1,0 +1,10 @@
+{
+  "app.components.HomePage.header": "Administrador de Propiedades",
+  "app.components.HomePage.addText": "Agregar Propiedad",
+  "app.components.HomePage.loadingMap": "Cargando Mapa...",
+  "app.components.NotFoundPage.header": "Lo siento lo que buscabas no esta aqui",
+  "app.components.Property.List.header.name": "Nombre",
+  "app.components.Property.List.header.market": "Mercado",
+  "app.components.Property.List.header.country": "Pais",
+  "app.components.Property.List.header.city": "Ciudad"
+}
