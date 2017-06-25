@@ -27,6 +27,9 @@ import {
   ON_MAP_CLICK,
   ON_PROPERTY_SAVE_SUCCESS,
   ON_PROPERTY_SAVE_ERROR,
+  ON_PROPERTY_UPDATE_SUCCESS,
+  ON_PROPERTY_UPDATE_ERROR,
+  ON_PROPERTY_DELETE_SUCCESS,
   ON_SHOW_ALERT_INFO,
   ON_CLOSE_ALERT_INFO,
   ON_OPEN_PROPERTY_ADD_MODAL_FORM,
@@ -60,7 +63,7 @@ const initialState = fromJS({
 });
 
 function appReducer(state = initialState, action) {
-  console.log('Action:', action);
+  console.log('Action:', action, state);
   switch (action.type) {
     case LOAD_PROPERTIES:
       return state
@@ -100,8 +103,46 @@ function appReducer(state = initialState, action) {
         .set('alertInfo', {
           show: true,
           type: 'danger',
-          title: 'Error ocurred',
-          message: 'There was an error while trying to save the property.',
+          title: 'Save error',
+          message: action.payload.data.message ? action.payload.data.message : 'There was an error while trying to save the property.',
+        });
+    case ON_PROPERTY_UPDATE_SUCCESS:
+      return state
+        .set('error', false)
+        .set('success', true)
+        .set('loading', false)
+        .set('newMarker', false)
+        .updateIn(['appData', 'properties'], (properties) => {
+          const position = properties.findIndex((p) => p.id === action.payload.property.id);
+          const newProperties = Object.assign([], properties, { [`${position}`]: action.payload.property });
+          return newProperties;
+        })
+        .set('alertInfo', {
+          show: true,
+          type: 'success',
+          title: 'Update success',
+          message: 'The property was updated successfully.',
+        });
+    case ON_PROPERTY_UPDATE_ERROR:
+      return state
+        .set('error', true)
+        .set('success', false)
+        .set('loading', false)
+        .set('alertInfo', {
+          show: true,
+          type: 'danger',
+          title: 'Update error',
+          message: 'There was an error while trying to update the property.',
+        });
+    case ON_PROPERTY_DELETE_SUCCESS:
+      return state
+        .set('error', false)
+        .set('success', true)
+        .set('loading', false)
+        .set('newMarker', false)
+        .updateIn(['appData', 'properties'], (properties) => {
+          const newProperties = properties.filter((p) => p.id !== action.payload.propertyId);
+          return newProperties;
         });
     case LOAD_MARKETS:
       return state
@@ -153,6 +194,7 @@ function appReducer(state = initialState, action) {
         .set('showPropertyAddModalForm', false);
     case ON_OPEN_PROPERTY_EDIT_MODAL_FORM:
       return state
+        .set('editingProperty', state.get('appData').get('properties').find((p) => p.id === action.payload.propertyId))
         .set('showPropertyEditModalForm', true);
     case ON_CLOSE_PROPERTY_EDIT_MODAL_FORM:
       return state

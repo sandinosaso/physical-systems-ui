@@ -10,9 +10,10 @@ import Form from '../Form';
 
 import { onHomeLoading, showMarkerInfo, closeMarkerInfo, onMapClick, onSaveProperty, closeAlertInfo } from '../../containers/HomePage/actions';
 import {
-  makeSelectProperties, makeSelectMarkers, makeSelectLoading,
+  makeSelectProperties, makeSelectLoading, makeSelectOpenPropertyKey,
   makeSelectMarkets, makeSelectCountries, makeSelectSelectedMarkerInfo,
-  makeSelectAtLeastOneMarkerOpen, makeSelectAlertInfo, makeSelectOpenPropertyKey } from '../../containers/HomePage/selectors';
+  makeSelectAtLeastOneMarkerOpen, makeSelectAlertInfo,
+} from '../../containers/HomePage/selectors';
 
 const AddProperty = (props) => {
   const marketOptions = props.markets.map((market) => ({ name: market.name, value: market.id }));
@@ -98,11 +99,11 @@ const AddProperty = (props) => {
   return (
     <div>
       <ModalFormWrapper show={props.show} onHide={props.onCancelAction} title="Edit Property">
-
         <Grid fluid>
           <Row>
             <Col xs={12} md={6}>
               <Form
+                initialValues={props.initialValues}
                 onSubmit={props.onSubmit}
                 onCancel={props.onCancelAction}
                 formFieldsRows={formFieldsRows}
@@ -113,6 +114,7 @@ const AddProperty = (props) => {
             <Col xs={12} md={6}>
               <div style={{ height: '400px' }}>
                 <GoogleMap
+                  options={{ draggable: true }}
                   googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${GOOGLE_MAP_API_KEY}`}
                   loadingElement={
                     <div style={{ height: '100%' }}>
@@ -126,8 +128,13 @@ const AddProperty = (props) => {
                     <div className={'mapElement'} style={{ height: '100%' }} />
                   }
                   onMapLoad={_.noop}
-                  onMapClick={props.onMapClickHandler}
-                  markers={props.markers}
+                  onMapClick={_.noop}
+                  markers={props.markers.map((m) => {
+                    const newMarker = { ...m, draggable: true };
+                    newMarker.onDragStart = () => console.log('Starting drawing');
+                    newMarker.onDragEnd = (e) => props.onMapClickHandler(e);
+                    return newMarker;
+                  })}
                   onMarkerRightClick={_.noop}
                   onMarkerClick={_.noop}
                   onMarkerClose={_.noop}
@@ -138,8 +145,6 @@ const AddProperty = (props) => {
             </Col>
           </Row>
         </Grid>
-
-
       </ModalFormWrapper>
     </div>
   );
@@ -147,8 +152,8 @@ const AddProperty = (props) => {
 
 AddProperty.propTypes = {
   show: React.PropTypes.bool,
+  initialValues: React.PropTypes.object,
   onSubmit: React.PropTypes.func,
-  onMapClickHandler: React.PropTypes.func,
   alertInfo: React.PropTypes.object,
   onCloseAlertInfo: React.PropTypes.func,
   onCancelAction: React.PropTypes.func,
@@ -173,7 +178,6 @@ const mapStateToProps = createStructuredSelector({
   properties: makeSelectProperties(),
   markets: makeSelectMarkets(),
   countries: makeSelectCountries(),
-  markers: makeSelectMarkers(),
   selectedMarkerKey: makeSelectOpenPropertyKey(),
   selectedMarkerInfo: makeSelectSelectedMarkerInfo(),
   loading: makeSelectLoading(),

@@ -31,6 +31,12 @@ import {
   ON_PROPERTY_SAVE,
   ON_PROPERTY_SAVE_SUCCESS,
   ON_PROPERTY_SAVE_ERROR,
+  ON_PROPERTY_UPDATE,
+  ON_PROPERTY_UPDATE_SUCCESS,
+  ON_PROPERTY_UPDATE_ERROR,
+  ON_PROPERTY_DELETE,
+  ON_PROPERTY_DELETE_SUCCESS,
+  ON_PROPERTY_DELETE_ERROR,
   SHOW_LOADING,
   HIDE_LOADING,
   ON_SHOW_ALERT_INFO,
@@ -231,6 +237,62 @@ export function onSavePropertySuccess(property) {
 export function onSavePropertyError(data) {
   return {
     type: ON_PROPERTY_SAVE_ERROR,
+    payload: {
+      data,
+    },
+  };
+}
+
+export function onUpdateProperty(values) {
+  // Convert form values (Immutable data) to plain JS
+  const data = values.toJS();
+  return {
+    type: ON_PROPERTY_UPDATE,
+    payload: {
+      data,
+    },
+  };
+}
+
+export function onUpdatePropertySuccess(property) {
+  return {
+    type: ON_PROPERTY_UPDATE_SUCCESS,
+    payload: {
+      property,
+    },
+  };
+}
+
+export function onUpdatePropertyError(data) {
+  return {
+    type: ON_PROPERTY_UPDATE_ERROR,
+    payload: {
+      data,
+    },
+  };
+}
+
+export function onDeleteProperty(propertyId) {
+  return {
+    type: ON_PROPERTY_DELETE,
+    payload: {
+      propertyId,
+    },
+  };
+}
+
+export function onDeletePropertySuccess(propertyId) {
+  return {
+    type: ON_PROPERTY_DELETE_SUCCESS,
+    payload: {
+      propertyId,
+    },
+  };
+}
+
+export function onDeletePropertyError(data) {
+  return {
+    type: ON_PROPERTY_DELETE_ERROR,
     payload: {
       data,
     },

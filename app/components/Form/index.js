@@ -47,7 +47,7 @@ const MyForm = (props) => {
         <Row className="modal-footer">
           <Col>
             <Button onClick={onCancel}>Cancel</Button>
-            <Button type="submit" bsStyle="primary" disabled={!valid || submitting}>Submit</Button>
+            <Button type="submit" bsStyle="primary" disabled={!valid || submitting}>Save</Button>
           </Col>
         </Row>
       </form>

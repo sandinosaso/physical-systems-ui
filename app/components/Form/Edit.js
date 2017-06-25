@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect, compose } from 'react-redux';
 import { Field, reduxForm } from 'redux-form/immutable';
 import { Row, Col, Button } from 'react-bootstrap';
 import FormTextInput from './InputText';
@@ -47,7 +48,7 @@ const MyForm = (props) => {
         <Row className="modal-footer">
           <Col>
             <Button onClick={onCancel}>Cancel</Button>
-            <Button type="submit" bsStyle="primary" disabled={!valid || submitting}>Submit</Button>
+            <Button type="submit" bsStyle="primary" disabled={!valid || submitting}>Update</Button>
           </Col>
         </Row>
       </form>
@@ -65,11 +66,19 @@ MyForm.propTypes = {
   handleAlertDismiss: React.PropTypes.func,
 };
 
-const FormReduxWrapper = reduxForm(
-  {
-    form: 'property-edit-form',
-    enableReinitialize: true,
-  }
+export default compose(
+  connect(
+    (state, ownProps) => {
+      const { initialValues } = ownProps;
+      return {
+        initialValues,
+      };
+    }
+  ),
+  reduxForm(
+    {
+      form: 'property-edit-form',
+      enableReinitialize: true,
+    }
+  )
 )(MyForm);
-
-export default FormReduxWrapper;

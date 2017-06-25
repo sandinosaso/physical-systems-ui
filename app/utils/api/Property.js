@@ -30,5 +30,13 @@ export default function Property() {
           },
         });
     },
+    Delete: (id) => (
+      request(`${baseURL}/${id}`,
+        { method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+    ),
   };
 }

@@ -11,6 +11,12 @@ export const LOAD_PROPERTIES_ERROR = 'physical-systems-ui/Home/LOAD_PROPERTIES_E
 export const ON_PROPERTY_SAVE = 'physical-systems-ui/Home/ON_PROPERTY_SAVE';
 export const ON_PROPERTY_SAVE_SUCCESS = 'physical-systems-ui/Home/ON_PROPERTY_SAVE_SUCCESS';
 export const ON_PROPERTY_SAVE_ERROR = 'physical-systems-ui/Home/ON_PROPERTY_SAVE_ERROR';
+export const ON_PROPERTY_UPDATE = 'physical-systems-ui/Home/ON_PROPERTY_UPDATE';
+export const ON_PROPERTY_UPDATE_SUCCESS = 'physical-systems-ui/Home/ON_PROPERTY_UPDATE_SUCCESS';
+export const ON_PROPERTY_UPDATE_ERROR = 'physical-systems-ui/Home/ON_PROPERTY_UPDATE_ERROR';
+export const ON_PROPERTY_DELETE = 'physical-systems-ui/Home/ON_PROPERTY_DELETE';
+export const ON_PROPERTY_DELETE_SUCCESS = 'physical-systems-ui/Home/ON_PROPERTY_DELETE_SUCCESS';
+export const ON_PROPERTY_DELETE_ERROR = 'physical-systems-ui/Home/ON_PROPERTY_DELETE_ERROR';
 
 export const ON_OPEN_PROPERTY_ADD_MODAL_FORM = 'physical-systems-ui/Home/ON_OPEN_PROPERTY_ADD_MODAL_FORM';
 export const ON_CLOSE_PROPERTY_ADD_MODAL_FORM = 'physical-systems-ui/Home/ON_CLOSE_PROPERTY_ADD_MODAL_FORM';

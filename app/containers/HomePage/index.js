@@ -25,15 +25,15 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import {
-  onHomeLoading, showMarkerInfo, closeMarkerInfo,
-  onMapClick, onSaveProperty, closeAlertInfo,
+  onHomeLoading, showMarkerInfo, closeMarkerInfo, onDeleteProperty,
+  onMapClick, onSaveProperty, onUpdateProperty, closeAlertInfo,
   onOpenPropertyAddModalForm, onClosePropertyAddModalForm,
   onOpenPropertyEditModalForm, onClosePropertyEditModalForm,
 } from './actions';
 
 import {
-  makeSelectProperties, makeSelectMarkers, makeSelectLoading,
-  makeSelectMarkets, makeSelectCountries, makeSelectSelectedMarkerInfo,
+  makeSelectProperties, makeSelectMarkers, makeSelectLoading, makeSelectCurrentPropertyMarkers,
+  makeSelectMarkets, makeSelectCountries, makeSelectSelectedMarkerInfo, makeSelectEditingProperty,
   makeSelectShowAddPropertyModalForm, makeSelectShowEditPropertyModalForm, makeSelectAlertInfo, makeSelectOpenPropertyKey,
 } from './selectors';
 
@@ -50,20 +50,12 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     this.props.onHomeLoaded();
   }
 
-  handleClickFromChildrenOfInfoBox = this.handleClickFromChildrenOfInfoBox.bind(this);
-
-  handleClickFromChildrenOfInfoBox(e) {
-    console.log('handleClickFromChildrenOfInfoBox!!');
-    console.log(e);
-  }
-
   render() {
     const {
-      markers, markets, countries,
-      onMapClickHandler, onMarkerClick,
+      markers, markets, countries, onMapClickHandler, onMarkerClick,
       onMarkerClose, showPropertyAddModalForm, showPropertyEditModalForm,
-      onSave, alertInfo, onCloseAlertInfo,
-      selectedMarkerInfo, selectedMarkerKey,
+      onSave, onUpdate, onDelete, alertInfo, onCloseAlertInfo, selectedMarkerInfo,
+      selectedMarkerKey, editingProperty, currentPropertyMarkers,
       openPropertyAddModalForm, closePropertyAddModalForm,
       openPropertyEditModalForm, closePropertyEditModalForm,
     } = this.props;
@@ -78,7 +70,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
             <h3 onClick={() => this.setState({ open: !this.state.open })} role="button">Properties List</h3> // eslint-disable-line jsx-a11y/no-static-element-interactions
           }
         >
-          <PropertiesList messages={messages} editPropertyHandler={openPropertyEditModalForm} deletePropertyHandler={() => null} />
+          <PropertiesList messages={messages} editPropertyHandler={openPropertyEditModalForm} deletePropertyHandler={onDelete} />
           <Button
             bsStyle="primary"
             bsSize="large"
@@ -89,13 +81,14 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
 
           <MarkerInfo show={selectedMarkerInfo !== false} selectedMarkerInfo={selectedMarkerInfo} onClose={() => onMarkerClose(selectedMarkerKey)} />
           <PropertyEditForm
+            initialValues={editingProperty}
             show={showPropertyEditModalForm}
-            onSubmit={onSave}
+            onSubmit={onUpdate}
             alertInfo={alertInfo}
             onCloseAlertInfo={onCloseAlertInfo}
             onCancelAction={closePropertyEditModalForm}
             onMapClickHandler={onMapClickHandler}
-            markers={markers}
+            markers={currentPropertyMarkers}
             markets={markets}
             countries={countries}
           />
@@ -135,7 +128,6 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
                     onMarkerRightClick={_.noop}
                     onMarkerClick={onMarkerClick}
                     onMarkerClose={onMarkerClose}
-                    onClickFromChildrenOfInfoBox={this.handleClickFromChildrenOfInfoBox}
                     enableInfoBox={GOOGLE_MAP_ENABLE_SHOW_MARKER_INFO_BOX}
                     enableInfoContent={GOOGLE_MAP_ENABLE_SHOW_MARKER_INFO_CONTENT}
                   />
@@ -165,10 +157,14 @@ HomePage.propTypes = {
   openPropertyEditModalForm: React.PropTypes.func,
   closePropertyEditModalForm: React.PropTypes.func,
   onSave: React.PropTypes.func,
+  onUpdate: React.PropTypes.func,
+  onDelete: React.PropTypes.func,
   onCloseAlertInfo: React.PropTypes.func,
   showPropertyAddModalForm: React.PropTypes.bool,
   showPropertyEditModalForm: React.PropTypes.bool,
   alertInfo: React.PropTypes.object,
+  editingProperty: React.PropTypes.object,
+  currentPropertyMarkers: React.PropTypes.array,
   selectedMarkerInfo: React.PropTypes.oneOfType([
     React.PropTypes.object,
     React.PropTypes.bool,
@@ -190,6 +186,8 @@ export function mapDispatchToProps(dispatch) {
     openPropertyEditModalForm: (propertyId) => dispatch(onOpenPropertyEditModalForm(propertyId)),
     closePropertyEditModalForm: () => dispatch(onClosePropertyEditModalForm()),
     onSave: (values) => dispatch(onSaveProperty(values)),
+    onUpdate: (values) => dispatch(onUpdateProperty(values)),
+    onDelete: (propertyId) => dispatch(onDeleteProperty(propertyId)),
     onCloseAlertInfo: () => dispatch(closeAlertInfo({ show: false })),
   };
 }
@@ -205,6 +203,8 @@ const mapStateToProps = createStructuredSelector({
   alertInfo: makeSelectAlertInfo(),
   showPropertyAddModalForm: makeSelectShowAddPropertyModalForm(),
   showPropertyEditModalForm: makeSelectShowEditPropertyModalForm(),
+  editingProperty: makeSelectEditingProperty(),
+  currentPropertyMarkers: makeSelectCurrentPropertyMarkers(),
 });
 
 // Wrap the component to inject dispatch and state into it

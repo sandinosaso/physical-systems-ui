@@ -7,6 +7,7 @@ import { createSelector } from 'reselect';
 
 const selectHome = (state) => state.get('home');
 const selectNewMarker = (state) => state.getIn(['home', 'newMarker']);
+const selectEditingProperty = (state) => state.getIn(['home', 'editingProperty']);
 const selectOpenPropertyKey = (state) => state.getIn(['home', 'openPropertyKey']);
 const selectProperties = (state) => state.getIn(['home', 'appData', 'properties']);
 
@@ -49,12 +50,20 @@ const makeSelectMarkers = () => createSelector(
   }
 );
 
+const makeSelectCurrentPropertyMarkers = () => createSelector(
+  [selectEditingProperty],
+  (property) => {
+    const currentMarkers = property ? getMapMarkers([property]) : [];
+    return currentMarkers;
+  }
+);
+
 const makeSelectSelectedMarkerInfo = () => createSelector(
   [selectProperties, selectOpenPropertyKey],
   (properties, openPropertyKey) => {
     const markers = getMapMarkers(properties, openPropertyKey);
-    const marker = markers ? markers.filter((m) => m.showInfo) : [];
-    return marker[0] ? marker[0].infoContent : false;
+    const marker = markers ? markers.find((m) => m.showInfo) : false;
+    return marker ? marker.infoContent : false;
   }
 );
 
@@ -91,6 +100,11 @@ const makeSelectOpenPropertyKey = () => createSelector(
   (globalState) => globalState.get('openPropertyKey')
 );
 
+const makeSelectEditingProperty = () => createSelector(
+  selectHome,
+  (globalState) => globalState.get('editingProperty')
+);
+
 
 const makeSelectLocationState = () => {
   let prevRoutingState;
@@ -121,6 +135,8 @@ export {
   makeSelectNewMarkerInfo,
   makeSelectSelectedMarkerInfo,
   makeSelectAtLeastOneMarkerOpen,
+  makeSelectEditingProperty,
+  makeSelectCurrentPropertyMarkers,
   makeSelectAlertInfo,
   makeSelectShowAddPropertyModalForm,
   makeSelectShowEditPropertyModalForm,
