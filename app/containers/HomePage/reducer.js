@@ -149,14 +149,14 @@ function appReducer(state = initialState, action) {
         .set('showPropertyAddModalForm', true);
     case ON_CLOSE_PROPERTY_ADD_MODAL_FORM:
       return state
-        .set('alertInfo', { show: false })
+        .set('alertInfo', { ...state.alertInfo, show: false })
         .set('showPropertyAddModalForm', false);
     case ON_OPEN_PROPERTY_EDIT_MODAL_FORM:
       return state
         .set('showPropertyEditModalForm', true);
     case ON_CLOSE_PROPERTY_EDIT_MODAL_FORM:
       return state
-        .set('alertInfo', { show: false })
+        .set('alertInfo', { ...state.alertInfo, show: false })
         .set('showPropertyEditModalForm', false);
     default:
       return state;

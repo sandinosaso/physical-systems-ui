@@ -15,8 +15,8 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { Button, Grid, Row, Col, PageHeader, Panel } from 'react-bootstrap';
 
-import Map from 'components/Map';
-import MarkerInfo from 'components/Map/MarkerInfo';
+import GoogleMap from 'components/GoogleMap';
+import MarkerInfo from 'components/GoogleMap/MarkerInfo';
 import PropertyAddForm from 'components/Property/Add';
 import PropertyEditForm from 'components/Property/Edit';
 import PropertiesList from 'components/Property/List';
@@ -116,7 +116,7 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
             <Row>
               <Col xs={12} md={12}>
                 <div style={{ height: '600px' }}>
-                  <Map
+                  <GoogleMap
                     googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${GOOGLE_MAP_API_KEY}`}
                     loadingElement={
                       <div style={{ height: '100%' }}>

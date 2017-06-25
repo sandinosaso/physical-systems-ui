@@ -4,6 +4,7 @@ import { Grid, Row, Col } from 'react-bootstrap';
 import { GOOGLE_MAP_API_KEY, GOOGLE_MAP_ENABLE_SHOW_MARKER_INFO_BOX, GOOGLE_MAP_ENABLE_SHOW_MARKER_INFO_CONTENT } from 'containers/App/constants';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
+import GoogleMap from 'components/GoogleMap';
 import ModalFormWrapper from '../Form/Modal';
 import Form from '../Form';
 
@@ -111,7 +112,7 @@ const AddProperty = (props) => {
             </Col>
             <Col xs={12} md={6}>
               <div style={{ height: '400px' }}>
-                <Map
+                <GoogleMap
                   googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${GOOGLE_MAP_API_KEY}`}
                   loadingElement={
                     <div style={{ height: '100%' }}>
